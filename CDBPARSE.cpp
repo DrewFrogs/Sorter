@@ -9,7 +9,9 @@ int main(int argc, char** argv) {
     ifstream myfile (argv[1]);
     if (myfile.is_open())
     {	
-		int check, hasScope, hasAccess = 0;
+		int check = 0;
+		int hasScope = 0;
+		int hasAccess = 0;
 		string procedureName;
 		ofstream outfile;
 		outfile.open("CDB.txt");
