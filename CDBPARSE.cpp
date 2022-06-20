@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     ifstream myfile (argv[1]);
     if (myfile.is_open())
     {	
-		int check = 0;
+		int check, hasScope = 0;
 		string procedureName;
 		ofstream outfile;
 		outfile.open("CDB.txt");
@@ -56,6 +56,13 @@ int main(int argc, char** argv) {
 					type = line.substr(line.find("REF_DATA"));
 					type = type.substr(0, type.find(".", 0));
 					outfile << type << ';' << scope << ';';
+					hasScope = 1;
+				}
+				else if(line.find("TYPE.NUM_VISIBLE_ITEM") != std::string::npos){
+					type = line.substr(line.find("TYPE.NUM_VISIBLE_ITEM"));
+					type = type.substr(0, type.find(".", 0));
+					outfile << type << ';' << scope << ';';
+					hasScope = 1;
 				}
 				else{
 					outfile << scope << ';';
@@ -93,9 +100,16 @@ int main(int argc, char** argv) {
 					}
 					
 				}
+				else if (hasScope == 0){
+					if(line.find("TYPE.REF_DATA") != std::string::npos)
+					type = line.substr(line.find("REF_DATA"));
+					type = type.substr(0, type.find(".", 0));
+					outfile << type << ';' << procedureName << ';' << name << ";";
+				}
 				else{
 					outfile << name << ';';
 				}
+				hasScope = 0;
 			}
 			else if (line.find(".TYPE") != std::string::npos){
 				//Fine word and print it
