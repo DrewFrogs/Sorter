@@ -9,11 +9,11 @@ int main(int argc, char** argv) {
     ifstream myfile (argv[1]);
     if (myfile.is_open())
     {	
-		int check, hasScope = 0;
+		int check, hasScope, hasAccess = 0;
 		string procedureName;
 		ofstream outfile;
 		outfile.open("CDB.txt");
-		outfile << "LABEL;SCOPE;NAME;NTERFACE_COMPILE_STATUS;BODY_COMPILE_STATUS;CLASS;ACCESS;INTERFACE;TYPE;NUMBER SCALE FACTORS;SCALE" << '\n';
+		outfile << "LABEL;SCOPE;NAME;INTERFACE_COMPILE_STATUS;BODY_COMPILE_STATUS;CLASS;ACCESS;INTERFACE;TYPE;NUMBER SCALE FACTORS;SCALE" << '\n';
         while ( getline (myfile,line) )
         {
 			if (check == 1){
@@ -151,6 +151,7 @@ int main(int argc, char** argv) {
 				access = line.substr(line.find('"')+1);
 				access.pop_back();
 			    outfile << access << ';';
+				hasAccess = 1;
 			}
 			else if (line.find("INTERFACE_CLASS") != std::string::npos){
 				//Fine word and print it
@@ -164,7 +165,11 @@ int main(int argc, char** argv) {
 				string inter;
 				inter = line.substr(line.find('"')+1);
 				inter.pop_back();
+				if(hasAccess == 0){
+					outfile << " ;";
+				}
 			    outfile << inter << ';';
+				hasAccess = 0;
 			}
 			else if (line.find("NUM_OF_SCALE_FACTORS") != std::string::npos){
 				//Fine word and print it
