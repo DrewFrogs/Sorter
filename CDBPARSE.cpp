@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 					hasScope = 1;
 				}
 				else if(line.find("TYPE.NUM_VISIBLE_ITEM") != std::string::npos){
-					type = line.substr(line.find("TYPE.NUM_VISIBLE_ITEM"));
+					type = line.substr(line.find("NUM_VISIBLE_ITEM"));
 					type = type.substr(0, type.find(".", 0));
 					outfile << type << ';' << scope << ';';
 					hasScope = 1;
