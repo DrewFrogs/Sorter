@@ -202,7 +202,6 @@ int main(int argc, char** argv) {
 		string name;
 		string scope;
 		std::vector<std::string> nameList {};
-		int step = 0;
 		ofstream outTable;
 		outTable.open("CDB_Set_Use_Table.txt");
 		outTable << "Name;Set;Used" << '\n';
@@ -221,13 +220,12 @@ int main(int argc, char** argv) {
 					outTable << '\n';
 				}
 				
-				step = 1;
 				ifstream readFile2 ("CDB_Table.txt");
 				string line2;
 				while ( getline (readFile2,line2) ){
-					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && line.find("read_before_written") == std::string::npos){
+					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && (line2.find("read_before_written") == std::string::npos) || line2.find("written_before_read") != std::string::npos){
 						string scope2;
-						scope2 = line2.substr(line.find(';')+1);
+						scope2 = line2.substr(line2.find(';')+1);
 						scope2 = scope2.substr(0, scope2.find(";", 0));
 						if (std::find(nameList.begin(), nameList.end(), scope2) == nameList.end()){
 							nameList.push_back(scope2);
