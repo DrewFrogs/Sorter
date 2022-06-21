@@ -39,6 +39,7 @@ int main(int argc, char** argv) {
 				unitName.pop_back();
 				procedureName = unitName;
 			    outfile << "UNIT_NAME;" << " ;" << unitName << ';';
+				hasAccess = 0;
 			}
 			else if (line.find("INTERFACE_COMPILE_STATUS") != std::string::npos){
 				//Fine word and print it
@@ -212,8 +213,9 @@ int main(int argc, char** argv) {
 				name = name.substr(name.find(';')+1);
 				name = name.substr(0, name.find(";", 0));
 				outTable << name << ';' << scope << ';';
-				if (line.find("read_before_written") != std::string::npos){
+				if (line.find("read_before_written") != std::string::npos || line.find("written_before_read") != std::string::npos){
 					outTable << scope << '\n';
+					nameList.push_back(scope);
 				}
 				else{
 					outTable << '\n';
