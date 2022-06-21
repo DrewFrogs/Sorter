@@ -202,6 +202,7 @@ int main(int argc, char** argv) {
 		string name;
 		string scope;
 		std::vector<std::string> nameList {};
+		std::vector<std::string> doneList {};
 		ofstream outTable;
 		outTable.open("CDB_Set_Use_Table.txt");
 		outTable << "Name;Set;Used" << '\n';
@@ -211,15 +212,16 @@ int main(int argc, char** argv) {
 				scope = name.substr(0, name.find(";", 0));
 				name = name.substr(name.find(';')+1);
 				name = name.substr(0, name.find(";", 0));
-				outTable << name << ';' << scope << ';';
-				if (line.find("read_before_written") != std::string::npos || line.find("written_before_read") != std::string::npos){
-					outTable << scope << '\n';
-					nameList.push_back(scope);
+				if (std::find(doneList.begin(), doneList.end(), name) == doneList.end()){
+					outTable << name << ';' << scope << ';';
+					if (line.find("read_before_written") != std::string::npos || line.find("written_before_read") != std::string::npos){
+						outTable << scope << '\n';
+						nameList.push_back(scope);
+					}
+					else{
+						outTable << '\n';
+					}
 				}
-				else{
-					outTable << '\n';
-				}
-				
 				ifstream readFile2 ("CDB_Table.txt");
 				string line2;
 				while ( getline (readFile2,line2) ){
@@ -235,6 +237,7 @@ int main(int argc, char** argv) {
 				}
 				readFile2.close();
 				nameList.clear();
+				doneList.push_back(name);
 			}
 		}
 		readFile.close();
