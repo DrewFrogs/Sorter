@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -194,8 +195,7 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 	
-	
-	
+	//Begin by opening the newly created file to create the set/use table
 	ifstream readFile ("CDB_Table.txt");
     if (readFile.is_open()){
 		string name;
@@ -218,7 +218,7 @@ int main(int argc, char** argv) {
 				else{
 					outTable << '\n';
 				}
-				nameList.push_back(name);
+				
 				step = 1;
 				ifstream readFile2 ("CDB_Table.txt");
 				string line2;
@@ -227,11 +227,14 @@ int main(int argc, char** argv) {
 						string scope2;
 						scope2 = line2.substr(line.find(';')+1);
 						scope2 = scope2.substr(0, scope2.find(";", 0));
-						outTable << name << "; ;" << scope2 << '\n';
+						if (std::find(nameList.begin(), nameList.end(), scope2) == nameList.end()){
+							nameList.push_back(scope2);
+							outTable << name << "; ;" << scope2 << '\n';
+						}
 					}
 				}
 				readFile2.close();
-				//readFile.seekg(0, readFile.beg);
+				nameList.clear();
 			}
 		}
 		readFile.close();
