@@ -1,23 +1,22 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 int main(int argc, char** argv) {
     string line;
     ifstream myfile (argv[1]);
-    if (myfile.is_open())
-    {	
+    if (myfile.is_open()){	
 		int check = 0;
 		int hasScope = 0;
 		int hasAccess = 0;
 		string procedureName;
 		ofstream outfile;
-		outfile.open("CDB.txt");
+		outfile.open("CDB_Table.txt");
 		outfile << "LABEL;SCOPE;NAME;INTERFACE_COMPILE_STATUS;BODY_COMPILE_STATUS;CLASS;ACCESS;INTERFACE;TYPE;NUMBER SCALE FACTORS;SCALE" << '\n';
-        while ( getline (myfile,line) )
-        {
+        while ( getline (myfile,line) ){
 			if (check == 1){
 				if (line.find("BODY_COMPILE_STATUS") != std::string::npos){
 					//Fine word and print it
@@ -190,7 +189,57 @@ int main(int argc, char** argv) {
         myfile.close();
 		outfile.close();
     }
-    else cout << "Unable to open file"; 
-
-    return 0;
+    else{
+		cout << "Unable to open file";
+		return 0;
+	}
+	
+	
+	
+	ifstream readFile ("CDB_Table.txt");
+    if (readFile.is_open()){
+		string name;
+		string scope;
+		std::vector<std::string> nameList {};
+		int step = 0;
+		ofstream outTable;
+		outTable.open("CDB_Set_Use_Table.txt");
+		outTable << "Name;Set;Used" << '\n';
+		while ( getline (readFile,line) ){
+			if (line.find("written") != std::string::npos){
+				name = line.substr(line.find(';')+1);
+				scope = name.substr(0, name.find(";", 0));
+				name = name.substr(name.find(';')+1);
+				name = name.substr(0, name.find(";", 0));
+				outTable << name << ';' << scope << ';';
+				if (line.find("read_before_written") != std::string::npos){
+					outTable << scope << '\n';
+				}
+				else{
+					outTable << '\n';
+				}
+				nameList.push_back(name);
+				step = 1;
+				ifstream readFile2 ("CDB_Table.txt");
+				string line2;
+				while ( getline (readFile2,line2) ){
+					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && line.find("read_before_written") == std::string::npos){
+						string scope2;
+						scope2 = line2.substr(line.find(';')+1);
+						scope2 = scope2.substr(0, scope2.find(";", 0));
+						outTable << name << "; ;" << scope2 << '\n';
+					}
+				}
+				readFile2.close();
+				//readFile.seekg(0, readFile.beg);
+			}
+		}
+		readFile.close();
+		outTable.close();
+    }
+    else{
+		cout << "Unable to open file";
+		return 0;
+	}
+	return 0;
 }
