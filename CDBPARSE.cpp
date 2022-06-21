@@ -223,7 +223,7 @@ int main(int argc, char** argv) {
 				ifstream readFile2 ("CDB_Table.txt");
 				string line2;
 				while ( getline (readFile2,line2) ){
-					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && (line2.find("read_before_written") == std::string::npos) || line2.find("written_before_read") != std::string::npos){
+					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && ((line2.find("read_before_written") == std::string::npos) || line2.find("written_before_read") != std::string::npos)){
 						string scope2;
 						scope2 = line2.substr(line2.find(';')+1);
 						scope2 = scope2.substr(0, scope2.find(";", 0));
