@@ -207,22 +207,21 @@ int main(int argc, char** argv) {
 		outTable.open("CDB_Set_Use_Table.txt");
 		outTable << "Parameter;Set;Used" << '\n';
 		while ( getline (readFile,line) ){
-			if (line.find("written") != std::string::npos){
+			if (line.find("written") != std::string::npos && line.find("REF_DATA") != std::string::npos){
 				name = line.substr(line.find(';')+1);
 				scope = name.substr(0, name.find(";", 0));
 				name = name.substr(name.find(';')+1);
 				name = name.substr(0, name.find(";", 0));
-				//if (std::find(doneList.begin(), doneList.end(), name) == doneList.end()){
 				outTable << name << ';' << scope << ';';
 				if (line.find("read_before_written") != std::string::npos || line.find("written_before_read") != std::string::npos){
 					outTable << scope << '\n';
-					nameList.push_back(scope);
+					//nameList.push_back(scope);
 				}
 				else{
 					outTable << '\n';
 				}
-			
-				ifstream readFile2 ("CDB_Table.txt");
+		
+				/*ifstream readFile2 ("CDB_Table.txt");
 				string line2;
 				while ( getline (readFile2,line2) ){
 					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && ((line2.find("read_before_written") == std::string::npos) || line2.find("written_before_read") == std::string::npos)){
@@ -263,11 +262,16 @@ int main(int argc, char** argv) {
 							//}
 						}
 					}
-				}
-				readFile2.close();
-				nameList.clear();
-				doneList.push_back(name);
-				//}
+				}*/
+				//readFile2.close();
+				//nameList.clear();
+			}
+			else if (line.find("read") != std::string::npos && line.find("REF_DATA") != std::string::npos && ((line.find("read_before_written") == std::string::npos) || (line.find("written_before_read") == std::string::npos))){
+				name = line.substr(line.find(';')+1);
+				scope = name.substr(0, name.find(";", 0));
+				name = name.substr(name.find(';')+1);
+				name = name.substr(0, name.find(";", 0));
+				outTable << name << "; ;" << scope << '\n';
 			}
 		}
 		readFile.close();
