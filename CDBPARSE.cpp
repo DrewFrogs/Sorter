@@ -9,7 +9,10 @@ using namespace std;
 int main(int argc, char** argv) {
     string line;
     ifstream myfile (argv[1]);
-    if (myfile.is_open()){	
+    if (myfile.is_open()){
+		//message to the user
+		cout << "CDB Table generation started." << '\n';
+		
 		int check = 0;
 		int hasScope = 0;
 		int hasAccess = 0;
@@ -192,17 +195,19 @@ int main(int argc, char** argv) {
 		outfile.close();
     }
     else{
-		cout << "Unable to open file";
+		cout << "Unable to open file" << '\n';
 		return 0;
 	}
+	
+	//message to the user
+	cout << "Finished generating CDB Table." << '\n';
+	cout << "CDB Set/Used table generation started." << '\n';
 	
 	//Begin by opening the newly created file to create the set/use table
 	ifstream readFile ("CDB_Table.txt");
     if (readFile.is_open()){
 		string name;
 		string scope;
-		std::vector<std::string> nameList {};
-		std::vector<std::string> doneList {};
 		ofstream outTable;
 		outTable.open("CDB_Set_Use_Table.txt");
 		outTable << "Parameter;Set;Used" << '\n';
@@ -215,56 +220,10 @@ int main(int argc, char** argv) {
 				outTable << name << ';' << scope << ';';
 				if (line.find("read_before_written") != std::string::npos || line.find("written_before_read") != std::string::npos){
 					outTable << scope << '\n';
-					//nameList.push_back(scope);
 				}
 				else{
 					outTable << '\n';
 				}
-		
-				/*ifstream readFile2 ("CDB_Table.txt");
-				string line2;
-				while ( getline (readFile2,line2) ){
-					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && ((line2.find("read_before_written") == std::string::npos) || line2.find("written_before_read") == std::string::npos)){
-						string scope2;
-						string name2;
-						scope2 = line2.substr(line2.find(';')+1);
-						scope2 = scope2.substr(0, scope2.find(";", 0));
-						name2 = line2.substr(line2.find(';')+1);
-						name2 = name2.substr(line2.find(';')+1);
-						name2 = name2.substr(0, name2.find(";", 0));
-						//make sure the parameter names match since the find func is not a exact match
-						int i = 0;
-						int found = 0;
-						if (name == name2){
-							for (i = 0; i < doneList.size(); i++){
-								if (doneList[i] == name2){
-									found = 1;
-								}
-							}
-							if (found == 0){
-								if (nameList.size() > 0){
-									for (i = 0; i < nameList.size(); i++){
-										if (nameList[i] == scope2){
-											nameList.push_back(scope2);
-											outTable << name << "; ;" << scope2 << '\n';
-											break;
-										}
-									}
-								}
-								else{
-									nameList.push_back(scope2);
-									outTable << name << "; ;" << scope2 << '\n';
-								}
-							}
-							//if (std::find(nameList.begin(), nameList.end(), scope2) == nameList.end()){
-							//	nameList.push_back(scope2);
-							//	outTable << name << "; ;" << scope2 << '\n';
-							//}
-						}
-					}
-				}*/
-				//readFile2.close();
-				//nameList.clear();
 			}
 			else if (line.find("read") != std::string::npos && line.find("REF_DATA") != std::string::npos && ((line.find("read_before_written") == std::string::npos) || (line.find("written_before_read") == std::string::npos))){
 				name = line.substr(line.find(';')+1);
@@ -278,8 +237,9 @@ int main(int argc, char** argv) {
 		outTable.close();
     }
     else{
-		cout << "Unable to open file";
+		cout << "Unable to open file" << '\n';
 		return 0;
 	}
+	cout << "Finished generating CDB Set/Used Table." << '\n';
 	return 0;
 }
