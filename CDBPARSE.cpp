@@ -243,12 +243,18 @@ int main(int argc, char** argv) {
 								}
 							}
 							if (found == 0){
-								for (i = 0; i < nameList.size(); i++){
-									if (nameList[i] == scope2){
-										nameList.push_back(scope2);
-										outTable << name << "; ;" << scope2 << '\n';
-										break;
+								if (nameList.size() > 0){
+									for (i = 0; i < nameList.size(); i++){
+										if (nameList[i] == scope2){
+											nameList.push_back(scope2);
+											outTable << name << "; ;" << scope2 << '\n';
+											break;
+										}
 									}
+								}
+								else{
+									nameList.push_back(scope2);
+									outTable << name << "; ;" << scope2 << '\n';
 								}
 							}
 							//if (std::find(nameList.begin(), nameList.end(), scope2) == nameList.end()){
