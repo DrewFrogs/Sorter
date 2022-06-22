@@ -225,7 +225,7 @@ int main(int argc, char** argv) {
 				ifstream readFile2 ("CDB_Table.txt");
 				string line2;
 				while ( getline (readFile2,line2) ){
-					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && ((line2.find("read_before_written") == std::string::npos) || line2.find("written_before_read") != std::string::npos)){
+					if (line2.find("read") != std::string::npos && line2.find(name) != std::string::npos && ((line2.find("read_before_written") == std::string::npos) || line2.find("written_before_read") == std::string::npos)){
 						string scope2;
 						string name2;
 						scope2 = line2.substr(line2.find(';')+1);
@@ -233,17 +233,34 @@ int main(int argc, char** argv) {
 						name2 = line2.substr(line2.find(';')+1);
 						name2 = name2.substr(line2.find(';')+1);
 						name2 = name2.substr(0, name2.find(";", 0));
+						//make sure the parameter names match since the find func is not a exact match
+						int i = 0;
+						int found = 0;
 						if (name == name2){
-							if (std::find(nameList.begin(), nameList.end(), scope2) == nameList.end()){
-								nameList.push_back(scope2);
-								outTable << name << "; ;" << scope2 << '\n';
+							for (i = 0; i < doneList.size(); i++){
+								if (doneList[i] == name2){
+									found = 1;
+								}
 							}
+							if (found == 0){
+								for (i = 0; i < nameList.size(); i++){
+									if (nameList[i] == scope2){
+										nameList.push_back(scope2);
+										outTable << name << "; ;" << scope2 << '\n';
+										break;
+									}
+								}
+							}
+							//if (std::find(nameList.begin(), nameList.end(), scope2) == nameList.end()){
+							//	nameList.push_back(scope2);
+							//	outTable << name << "; ;" << scope2 << '\n';
+							//}
 						}
 					}
 				}
 				readFile2.close();
 				nameList.clear();
-					//doneList.push_back(name);
+				doneList.push_back(name);
 				//}
 			}
 		}
